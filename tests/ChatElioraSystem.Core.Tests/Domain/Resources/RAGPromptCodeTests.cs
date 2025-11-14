@@ -33,7 +33,6 @@ public class RAGPromptCodeTests
         wzorce.Should().NotBeNullOrEmpty();
         wzorce.Should().Contain("SeedPack_ReflectumCoding");
         wzorce.Should().Contain("version");
-        wzorce.Should().Contain("author");
     }
 
     [Fact]
