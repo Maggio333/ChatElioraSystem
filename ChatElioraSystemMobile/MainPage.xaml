@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:ChatElioraSystemMobile"
+             xmlns:viewModels="clr-namespace:ChatElioraSystemMobile.ViewModels;assembly=ChatElioraSystemMobile"
+             x:Class="ChatElioraSystemMobile.MainPage"
+             xmlns:templates="clr-namespace:ChatElioraSystemMobile.Template"
+             BackgroundColor="White" >
+
+    <ContentPage.Resources>
+        <!-- ✅ TEMPLATES -->
+        <DataTemplate x:Key="UserTemplate">
+            <StackLayout Margin="13,3,7,3" HorizontalOptions="End">
+                <Label Text="{Binding Timestamp}" FontSize="10" TextColor="Gray" HorizontalOptions="Center"/>
+                <Frame BackgroundColor="#9ABED9"
+                       CornerRadius="20"
+                       Padding="10"
+                       HasShadow="False">
+                    <Label Text="{Binding Content}" TextColor="Black" />
+                </Frame>
+            </StackLayout>
+        </DataTemplate>
+
+        <DataTemplate x:Key="AiTemplate" >
+            <StackLayout Margin="7,3,13,3" HorizontalOptions="Start" >
+                <Label Text="{Binding Timestamp}" FontSize="10" TextColor="Gray" HorizontalOptions="Center"/>
+
+
+                <Frame BackgroundColor="#8FA3D9"                       
+                       CornerRadius="20"
+                       Padding="10"
+                       HasShadow="False">
+                    <Label>
+                        <Label.FormattedText>
+                            <Binding Path="Content" Converter="{StaticResource MauiColorizingConverter}"/>
+                        </Label.FormattedText>
+                    </Label>
+                </Frame>
+            </StackLayout>
+        </DataTemplate>
+
+        <DataTemplate x:Key="DbTemplate">
+            <StackLayout Margin="3,3,3,3" HorizontalOptions="Center" >
+                <Label Text="{Binding Timestamp}" FontSize="10" TextColor="Gray" HorizontalOptions="Center"/>
+                <Frame BackgroundColor="#D1D3D9"
+                       CornerRadius="10"
+                       Padding="10"
+                       HasShadow="False">
+                    <Label Text="{Binding Content}" FontSize="9" />
+                </Frame>
+            </StackLayout>
+        </DataTemplate>
+
+        <DataTemplate x:Key="ToolTemplate">
+            <StackLayout Margin="4" HorizontalOptions="Center" >
+                <Label Text="{Binding Timestamp}" FontSize="10" TextColor="Black" HorizontalOptions="Center"/>
+                <Frame BackgroundColor="#a3a3a3"
+                       CornerRadius="10"
+                       Padding="10"
+                       HasShadow="False">
+                    <Label Text="{Binding Content}" TextColor="Black" />
+                </Frame>
+            </StackLayout>
+        </DataTemplate>
+
+        <DataTemplate x:Key="SystemTemplate">
+            <StackLayout Margin="4" HorizontalOptions="Center" >
+                <Label Text="{Binding Timestamp}" FontSize="10" TextColor="Gray" HorizontalOptions="Center"/>
+                <Frame BackgroundColor="#f0f0f0"
+                       CornerRadius="10"
+                       Padding="10"
+                       HasShadow="False">
+                    <Label Text="{Binding Content}" TextColor="Black" />
+                </Frame>
+            </StackLayout>
+        </DataTemplate>
+
+        <!-- ✅ SELECTOR -->
+        <templates:ChatMessageTemplateSelector x:Key="ChatMessageSelector"
+                                           UserTemplate="{StaticResource UserTemplate}"
+                                           AiTemplate="{StaticResource AiTemplate}"
+                                           DbTemplate="{StaticResource DbTemplate}"
+                                           ToolTemplate="{StaticResource ToolTemplate}"
+                                           SystemTemplate="{StaticResource SystemTemplate}"/>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="*,Auto" Padding="5">
+        <!-- ✅ Messages -->
+        <CollectionView x:Name="MessagesView"
+                        ItemsSource="{Binding Messages}"
+                        ItemTemplate="{StaticResource ChatMessageSelector}"
+                        SelectionMode="None"
+                        BackgroundColor="#d9d9d9"
+                        Margin="3,13,3,13"                        
+                        />
+
+        <!-- ✅ Input -->
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" Padding="4"  >
+            <Entry Text="{Binding InputText}"                    
+                   Placeholder="Napisz wiadomość..." 
+                   TextColor="Black"
+                   FontSize="16" BackgroundColor="Transparent"/>
+            
+            <Button Grid.Column="1"
+                    Text="Wyślij"
+                    Command="{Binding SendCommand}"
+                    BackgroundColor="#a6a6a6"
+                    TextColor="Black"
+                    Padding="10,5"
+                    Margin="5,0"
+                    CornerRadius="10" />
+            <!--<Button Grid.Column="2" Text="Testuj Qdrant" Clicked="OnTestQdrantClicked" />-->
+
+        </Grid>
+    </Grid>
+    
+</ContentPage>

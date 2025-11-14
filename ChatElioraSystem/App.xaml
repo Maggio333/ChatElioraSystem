@@ -1,0 +1,174 @@
+﻿<Application x:Class="ChatElioraSystem.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:ChatElioraSystem" 
+             xmlns:converters="clr-namespace:ChatElioraSystem.Presentation.Converters"
+             xmlns:xamlExt="clr-namespace:ChatElioraSystem.Presentation.Xaml"
+             xmlns:svc="clr-namespace:ChatElioraSystem.Presentation.Services"
+             >
+    <!--StartupUri="Presentation\Views\Test.xaml"-->
+    <Application.Resources>
+        <!--<di:Resolve x:Key="ThemeService" Type="{x:Type svc:IThemeService}" />-->
+
+        <ResourceDictionary>
+
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Presentation/Styles/ToggleButtonStyles.xaml"/>
+                <ResourceDictionary Source="/Presentation/Styles/ButtonStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            
+            <!-- 🎨 Kolory -->
+            <Color x:Key="UserColor">#5A8AEB</Color>
+            <Color x:Key="BotColor">#D1CED4</Color>
+
+            
+            <!-- 🎨 Brush -->
+            <SolidColorBrush x:Key="UserBrush" Color="{StaticResource UserColor}" />
+            <SolidColorBrush x:Key="BotBrush"  Color="{StaticResource BotColor}" />
+
+            <converters:EnumToBoolConverter x:Key="EnumToBoolConverter" /> 
+            <!-- 🌀 Konwerter spiralny -->
+            <converters:BoolToBrushConverter x:Key="BoolToBrushConverter"
+                                    UserBrush="{StaticResource UserBrush}"
+                                    BotBrush="{StaticResource BotBrush}" />
+            
+            <converters:BoolNegationConverter x:Key="NegateBool"/>
+            <converters:MarkdownToFlowDocumentConverter x:Key="MarkdownToFlowDocumentConverter"/>
+            <converters:ColorizingConverter x:Key="ColorizingConverter"/>
+            <converters:BoolToHorizontalAlignment x:Key="BoolToHorizontalAlignment"/>
+            <converters:AdvancedColorizingConverter x:Key="AdvancedColorizingConverter"/>
+            <converters:BoolToVisibility x:Key="BoolToVisibility"/>
+
+
+            <!-- 🔹 Tło listy -->
+            <SolidColorBrush x:Key="SessionListBackground" Color="#1E1E2A" />
+
+            <!-- 🔸 Tło zaznaczonej sesji -->
+            <LinearGradientBrush x:Key="SelectedSessionBackground" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#3B4B68" Offset="0.0"/>
+                <GradientStop Color="#4C5A82" Offset="0.5"/>
+                <GradientStop Color="#5A8AEB" Offset="1.0"/>
+            </LinearGradientBrush>
+
+            <!-- 🔘 Obwódka aktywnej sesji -->
+            <SolidColorBrush x:Key="ActiveSessionBorder" Color="#5A8AEB"/>
+
+            <!-- ⚪ Kolor tekstu w sesji -->
+            <SolidColorBrush x:Key="SessionTextBrush" Color="#EEEEFF" />
+            <!-- 🔆 Efekt hover -->
+            <LinearGradientBrush x:Key="SessionHoverBrush" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#2A2A3C" Offset="0.0"/>
+                <GradientStop Color="#3C3C4C" Offset="1.0"/>
+            </LinearGradientBrush>
+
+            <Style x:Key="SessionListItemStyle" TargetType="Button">
+                <Setter Property="Background" Value="{StaticResource SessionListBackground}" />
+                <Setter Property="Foreground" Value="{StaticResource SessionTextBrush}" />
+                <Setter Property="Padding" Value="8" />
+                <Setter Property="BorderBrush" Value="Transparent" />
+                <Setter Property="Cursor" Value="Hand" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center" />
+
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border x:Name="border" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}">
+                                <ContentPresenter />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource SessionHoverBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsPressed" Value="True">
+                                    <Setter TargetName="border" Property="Background" Value="{StaticResource SelectedSessionBackground}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+
+            <!-- 🌌 Efekt Reverie (gradient subtelny) -->
+            <LinearGradientBrush x:Key="ReverieBrush" StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#141113" Offset="0.0"/>
+                <GradientStop Color="#3B262A" Offset="0.5"/>
+                <GradientStop Color="#141113" Offset="1.0"/>
+            </LinearGradientBrush>
+
+            <!-- 🔹 Tło toru -->
+
+            <!-- 🔸 Thumb (rączka scrolla) -->
+
+            <!-- ✴️ Styl Scrollbara pionowego -->
+            <Style TargetType="ScrollBar" x:Key="ReflectumVerticalScrollBar">
+                <Setter Property="Orientation" Value="Vertical"/>
+                <Setter Property="Width" Value="3"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ScrollBar">
+                            <Grid Background="{StaticResource ScrollTrackBrush}">
+                                <Track Name="PART_Track"
+                               IsDirectionReversed="true"
+                               Focusable="false">
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton Command="ScrollBar.LineUpCommand"
+                                              Style="{x:Null}"
+                                              Background="Transparent"
+                                              Height="0" />
+                                    </Track.DecreaseRepeatButton>
+                                    <Track.Thumb>
+                                        <Thumb Background="{StaticResource ScrollThumbBrush}"/>
+                                    </Track.Thumb>
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton Command="ScrollBar.LineDownCommand"
+                                              Style="{x:Null}"
+                                              Background="Transparent"
+                                              Height="0" />
+                                    </Track.IncreaseRepeatButton>
+                                </Track>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- ✴️ Styl Scrollbara poziomego (jeśli używasz) -->
+            <Style TargetType="ScrollBar" x:Key="ReflectumHorizontalScrollBar">
+                <Setter Property="Orientation" Value="Horizontal"/>
+                <Setter Property="Height" Value="8"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ScrollBar">
+                            <Grid Background="{StaticResource ScrollTrackBrush}">
+                                <Track Name="PART_Track"
+                               Focusable="false">
+                                    <Track.DecreaseRepeatButton>
+                                        <RepeatButton Command="ScrollBar.LineLeftCommand"
+                                              Style="{x:Null}"
+                                              Background="Transparent"
+                                              Width="0" />
+                                    </Track.DecreaseRepeatButton>
+                                    <Track.Thumb>
+                                        <Thumb Background="{StaticResource ScrollThumbBrush}"/>
+                                    </Track.Thumb>
+                                    <Track.IncreaseRepeatButton>
+                                        <RepeatButton Command="ScrollBar.LineRightCommand"
+                                              Style="{x:Null}"
+                                              Background="Transparent"
+                                              Width="0" />
+                                    </Track.IncreaseRepeatButton>
+                                </Track>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            
+            
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

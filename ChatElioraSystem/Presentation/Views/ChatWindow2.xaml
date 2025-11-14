@@ -1,0 +1,510 @@
+﻿<Window x:Class="ChatElioraSystem.Presentation.Views.ChatWindow2"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="clr-namespace:ChatElioraSystem.Presentation.ViewModels"
+        xmlns:converters="clr-namespace:ChatElioraSystem.Presentation.Converters"
+        xmlns:controls="clr-namespace:ChatElioraSystem.Presentation.Controls" d:DataContext="{d:DesignInstance Type=vm:ChatViewModel}"
+        xmlns:behaviors="clr-namespace:ChatElioraSystem.Presentation.Behaviors"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        mc:Ignorable="d"
+        Title="ATS Reflectum — Chat"
+        Height="800" Width="900"
+        Background="#121422">
+
+    <!--<Window.DataContext>
+        <vm:ChatViewModel/>
+    </Window.DataContext>-->
+
+    <!-- ====== Z A S O B Y ====== -->
+    <Window.Resources>
+
+        <!-- Paleta -->
+        <SolidColorBrush x:Key="BgMain" Color="#0E1020"/>
+        <SolidColorBrush x:Key="BgSidebar" Color="#14172A"/>
+        <SolidColorBrush x:Key="BgUser" Color="#2A3A6A"/>
+        <SolidColorBrush x:Key="BgAi" Color="#0D141C"/>
+        <SolidColorBrush x:Key="BgDbAction" Color="#3F3957"/>
+        <SolidColorBrush x:Key="BgTool" Color="#574121"/>
+        <SolidColorBrush x:Key="FgText" Color="#FFFFFF"/>
+        <SolidColorBrush x:Key="FgSubtle" Color="#CCDBF1"/>
+        <SolidColorBrush x:Key="Accent" Color="#7EA2FF"/>
+
+
+        <Style x:Key="ChatListBoxStyle2" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <Border Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="ScrollViewer"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                                <i:Interaction.Behaviors>
+                                    <behaviors:AutoScrollBehavior/>
+                                </i:Interaction.Behaviors>
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Styl listy z wirtualizacją -->
+        <Style x:Key="ChatListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <StackPanel />
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Margin"  Value="0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <Border Background="{TemplateBinding Background}" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
+                        BorderThickness="{TemplateBinding BorderThickness}">
+                            <ScrollViewer x:Name="ScrollViewer"
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                                <i:Interaction.Behaviors>
+                                    <behaviors:AutoScrollBehavior/>
+                                </i:Interaction.Behaviors>
+                                <ItemsPresenter/>
+                            </ScrollViewer>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <DataTemplate x:Key="MessageTemplate3">
+            <Grid Margin="5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Timestamp -->
+                <TextBlock Grid.Row="0" Text="{Binding Timestamp}" Foreground="White" FontSize="11" Margin="6,5" HorizontalAlignment="Center">
+                    <TextBlock.Style>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsDbAction}" Value="True">
+                                    <Setter Property="Visibility" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.IsLogOnView, Converter={StaticResource BoolToVisibility}}" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsTool}" Value="True">
+                                    <Setter Property="Visibility" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.IsLogOnView, Converter={StaticResource BoolToVisibility}}" />
+                                </DataTrigger>
+
+                                <DataTrigger Binding="{Binding IsSystem}" Value="True">
+                                    <Setter Property="Visibility" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.IsLogOnView, Converter={StaticResource BoolToVisibility}}" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </TextBlock.Style>
+                </TextBlock>
+
+                <!-- Bąbelek -->
+                <Border Grid.Row="1"
+                Padding="10"
+                CornerRadius="30"
+                MaxWidth="600"
+                SizeChanged="RichTextBox_SizeChanged"
+                
+                SnapsToDevicePixels="True">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="{StaticResource BgAi}" />
+                            <Setter Property="ToolTip" Value="Eliora"/>
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                            <Setter Property="CornerRadius" Value="10,10,10,2"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsUser}" Value="True">
+                                    <Setter Property="ToolTip" Value="Użytkownik"/>
+                                    <Setter Property="Background" Value="{StaticResource BgUser}" />
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="CornerRadius" Value="10,10,2,10"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsDbAction}" Value="True">
+                                    <Setter Property="ToolTip" Value="Akcje z bazy danych"/>
+                                    <Setter Property="Background" Value="{StaticResource BgDbAction}" />
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="Height" Value="200"/>
+                                    <Setter Property="Visibility" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.IsLogOnView, Converter={StaticResource BoolToVisibility}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsTool}" Value="True">
+                                    <Setter Property="ToolTip" Value="Kod do bazy"/>
+                                    <Setter Property="Background" Value="{StaticResource BgTool}" />
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="Visibility" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.IsLogOnView, Converter={StaticResource BoolToVisibility}}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding IsSystem}" Value="True">
+                                    <Setter Property="ToolTip" Value="Kod do bazy"/>
+                                    <Setter Property="Background" Value="{StaticResource BgTool}" />
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                    <Setter Property="Visibility" Value="{Binding RelativeSource={RelativeSource AncestorType=Window}, Path=DataContext.IsLogOnView, Converter={StaticResource BoolToVisibility}}"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    
+                    <RichTextBox
+                        SizeChanged="RichTextBox_SizeChanged"
+                        behaviors:RichTextBoxBehavior.BindableContent="{Binding Content}"
+                        IsReadOnly="True"
+                        Foreground="{StaticResource FgText}"
+                        Background="Transparent"                        
+                        BorderThickness="0"
+                        Margin="5"
+                        FontSize="15"
+                        Padding="0"
+                        VerticalScrollBarVisibility="Auto"
+                        HorizontalScrollBarVisibility="Disabled"/>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="MessageTemplate2">
+            <Grid Margin="0 6">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Timestamp -->
+                <TextBlock Grid.Row="0"
+                   Text="{Binding Timestamp}"
+                   Foreground="#BBD0FF"
+                   FontSize="11"
+                   Margin="6,0"
+                   HorizontalAlignment="Center" />
+
+                <!-- Bąbelek -->
+                <Border Grid.Row="1"
+                Padding="10"
+                CornerRadius="10"
+                MaxWidth="600"
+                SnapsToDevicePixels="True">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="{StaticResource BgAi}" />
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                            <Setter Property="CornerRadius" Value="10,10,10,2"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsUser}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BgUser}" />
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="CornerRadius" Value="10,10,2,10"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+
+                    <!-- ✅ Zamiana: TextBlock z dynamiczną treścią -->
+                    <TextBlock Text="{Binding Content}"
+                       Foreground="{StaticResource FgText}"
+                       FontSize="15"
+                       TextWrapping="Wrap"
+                       TextTrimming="None"
+                       HorizontalAlignment="Left"/>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Template pojedynczej wiadomości -->
+        <DataTemplate x:Key="MessageTemplate">
+            
+            <Grid Margin="0 6">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Timestamp -->
+                <TextBlock Grid.Row="0"
+                           Text="{Binding Timestamp}"
+                           Foreground="#BBD0FF"
+                           FontSize="11"
+                           Margin="6,0"
+                           HorizontalAlignment="Center"   
+                           />
+
+                <!-- Bąbelek -->
+                <Border Grid.Row="1"
+                        Padding="10"
+                        CornerRadius="10"
+                        MaxWidth="600"
+                        SnapsToDevicePixels="True"   
+                        Background="{Binding IsUser, Converter={StaticResource BoolToBrushConverter}}"
+                        >
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Background" Value="{StaticResource BgAi}"/>
+                            <Setter Property="HorizontalAlignment" Value="Left"/>
+                            <Setter Property="CornerRadius" Value="10,10,10,2"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsUser}" Value="True">
+                                    <Setter Property="Background" Value="{StaticResource BgUser}"/>
+                                    <Setter Property="HorizontalAlignment" Value="Right"/>
+                                    <Setter Property="CornerRadius" Value="10,10,2,10"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    
+                    
+                    <!--Foreground="{StaticResource FgText}"-->
+                    <!--Loaded="MessageText_Loaded"
+                            DataContextChanged="MessageText_DataContextChanged"-->
+                    <RichTextBox
+                            Foreground="{StaticResource FgText}"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            IsDocumentEnabled="True"
+                            Padding="0"
+                            Cursor="Arrow"
+                            FontSize="15"
+                            AcceptsReturn="True"
+                            VerticalScrollBarVisibility="Hidden"
+                            HorizontalScrollBarVisibility="Disabled"
+
+                            IsReadOnly="{Binding DataContext.CanEditContent, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource NegateBool}}">
+                        <FlowDocument PagePadding="0" LineStackingStrategy="BlockLineHeight">
+                            <FlowDocument.Resources>
+                                <Style TargetType="Paragraph">
+                                    <Setter Property="Margin" Value="0"/>
+                                </Style>
+                            </FlowDocument.Resources>
+                        </FlowDocument>
+                    </RichTextBox>
+                </Border>
+            </Grid>
+        </DataTemplate>
+
+        <!-- Konwerter bool->brush minimalny (bez kodu-behind: MultiBinding niepotrzebny).
+             Użyjemy w Border.Style powyżej, więc TUTAJ placeholder; zostawiamy fallback,
+             bo faktycznie style ustawia tła. -->
+        <!--<converters:BooleanToBrushConverter x:Key="BooleanToBrushConverter"
+                                       TrueBrush="{StaticResource BgUser}"
+                                       FalseBrush="{StaticResource BgAi}"/>-->
+
+        <!-- Styl przycisku "Wyślij" -->
+        <Style x:Key="SendButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="52"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="8,0,0,0"/>
+            <Setter Property="Foreground" Value="{StaticResource FgText}"/>
+            <Setter Property="Background" Value="{StaticResource Accent}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <!-- Styl przycisków listy sesji -->
+        <Style x:Key="SessionItemButton" TargetType="Button">
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Padding" Value="6,4"/>
+            <Setter Property="Background" Value="#1E233A"/>
+            <Setter Property="Foreground" Value="{StaticResource FgText}"/>
+            <Setter Property="BorderBrush" Value="#2F3B6A"/>
+        </Style>
+    </Window.Resources>
+
+    <!-- ====== L A Y O U T ====== -->
+    <Grid Background="{StaticResource BgMain}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="100"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Nagłówek -->
+        <TextBlock Grid.Row="0" 
+                   Text="Rozmowy"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Foreground="{StaticResource FgText}"
+                   FontSize="16" FontWeight="SemiBold"/>
+
+        <!-- Sidebar: lista rozmów -->
+        <Border Grid.Row="1" Grid.Column="0" Grid.RowSpan="2"
+                Background="{StaticResource BgSidebar}">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="8">
+                    <ItemsControl ItemsSource="{Binding TopicsConversation}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Button Style="{StaticResource SessionItemButton}"
+                                        Content="{Binding Title}"
+                                        Command="{Binding DataContext.OpenSessionCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding Messages}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- Lista wiadomości --><!--
+        <ListBox Grid.Row="1" Grid.Column="1"
+                 Name="MessagesList"
+                 Style="{StaticResource ChatListBoxStyle2}"
+                 ItemTemplate="{StaticResource MessageTemplate3}"                                 
+                 ItemsSource="{Binding Messages}"         
+                 Margin="0,6,6,6"      
+                 SelectedValue="{Binding SelectedMessage}"
+                                  
+                 />-->
+
+        <ScrollViewer Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"
+              behaviors:ScrollViewerBehavior.AutoScroll="True"
+              Name="MessagesScrollViewer"
+              VerticalScrollBarVisibility="Auto"
+              HorizontalScrollBarVisibility="Disabled"
+              Margin="0,6,6,6">
+            <ItemsControl ItemsSource="{Binding Messages}"
+                  Name="MessagesList"
+                  ItemTemplate="{StaticResource MessageTemplate3}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </ScrollViewer>
+
+        <!--SelectionChanged="MessagesList_SelectionChanged"-->
+        <!---->
+        <!--<ListBox Grid.Row="1" Grid.Column="1" ItemsSource="{Binding Messages}"
+         ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="ListBoxItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListBox.ItemContainerStyle>
+        </ListBox>-->
+
+        <!-- Pasek trybów + nowa rozmowa -->
+        <DockPanel Grid.Row="2" Grid.Column="1" LastChildFill="False" Margin="0,0,6,6" >
+            <StackPanel Orientation="Vertical">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Margin="5,15,5,0">
+                    <TextBlock Text="Obecna tematyka rozmowy:" Foreground="White"/>
+                    <TextBox Text="{Binding WybranyTemat}" HorizontalContentAlignment="Center" Foreground="White" FontFamily="Calisto MT" Background="#1A1F33" Width="200" Margin="5,0" IsReadOnly="True"/>
+                    <!--<RadioButton Content="Ogólna" GroupName="Tematy"
+                             Margin="4,0" IsChecked="{Binding WybranyTemat, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Ogólna}" Foreground="White"/>
+                    <RadioButton Content="Kod" GroupName="Tematy"
+                             Margin="4,0" IsChecked="{Binding WybranyTemat, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Kod}" Foreground="White"/>
+                    <RadioButton Content="Refleksyjna" GroupName="Tematy"
+                             Margin="4,0" IsChecked="{Binding WybranyTemat, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Refleksyjna}" Foreground="White"/>
+                    <RadioButton Content="Architektura" GroupName="Tematy"
+                             Margin="4,0" IsChecked="{Binding WybranyTemat, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=ArchitekturaKodu}" Foreground="White"/>-->
+                    
+
+
+                </StackPanel>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" Margin="5,15,5,5">
+                    <CheckBox Content="Zapis do bazy"
+                          Margin="12,0,0,0" IsChecked="{Binding IsSaveToDbVec}" Foreground="White"/>
+                    <CheckBox Content="Logi z bazy"
+                          Margin="12,0,0,0" IsChecked="{Binding IsLogOnView}" Foreground="White"/>
+                    <CheckBox Content="Edycja wiadomości"
+                          Margin="12,0,0,0" IsChecked="{Binding CanEditContent}" Foreground="White"/>
+                </StackPanel>
+
+            </StackPanel>
+
+        </DockPanel>
+
+        <!-- Pole wprowadzania + Wyślij -->
+        <Grid Grid.Row="3" Grid.Column="1" Margin="0,0,6,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox x:Name="InputBox"
+                     Grid.Column="0"
+                     Text="{Binding InputText, UpdateSourceTrigger=PropertyChanged}"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     MinHeight="48"
+                     MaxHeight="120"
+                     VerticalContentAlignment="Top"
+                     Foreground="{StaticResource FgText}"
+                     Background="#1A1F33"
+                     BorderBrush="#3A4572"
+                     BorderThickness="1"
+                     Padding="10"
+                     FontSize="14"/>
+            <!--<RichTextBox
+                        Foreground="{StaticResource FgText}"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        IsDocumentEnabled="True"
+                        Padding="0"
+                        Cursor="Arrow"
+                        FontSize="15"
+                        AcceptsReturn="True"
+                        VerticalScrollBarVisibility="Hidden"
+                        HorizontalScrollBarVisibility="Disabled"
+                        Loaded="MessageText_Loaded"
+                        DataContextChanged="MessageText_DataContextChanged"
+                        IsReadOnly="{Binding DataContext.CanEditContent, RelativeSource={RelativeSource AncestorType=ItemsControl}, Converter={StaticResource NegateBool}}">
+                <FlowDocument PagePadding="0" LineStackingStrategy="BlockLineHeight">
+                    <FlowDocument.Resources>
+                        <Style TargetType="Paragraph">
+                            <Setter Property="Margin" Value="0"/>
+                        </Style>
+                    </FlowDocument.Resources>
+                </FlowDocument>
+            </RichTextBox>-->
+
+
+
+        </Grid>
+        <Button 
+                    Content="+ Nowa rozmowa"
+                    Grid.Row="3" Grid.Column="0"
+                    Command="{Binding CreateNewSessionCommand}"
+                    HorizontalAlignment="Center"                    
+                    FontSize="10"
+                    Width="100"
+                    Height="40"              
+                    Margin="20,0,20,0"
+                    Style="{StaticResource SessionItemButton}"/>
+        <Button Grid.Column="2"
+                Grid.Row="3"
+                    Content="➤"
+                    Style="{StaticResource SendButtonStyle}"
+                    Command="{Binding SendCommand, UpdateSourceTrigger=PropertyChanged}"
+                    IsDefault="True"
+                    ToolTip="Wyślij (Enter). Nowa linia: Shift+Enter"/>
+    </Grid>
+</Window>

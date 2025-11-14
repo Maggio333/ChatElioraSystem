@@ -1,0 +1,36 @@
+# Build artifacts
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+
+# IDE
+.vs/
+.idea/
+*.user
+*.suo
+
+# Test results
+TestResults/
+*.trx
+*.coverage
+
+# Documentation (keep in repo but ignore in Docker context)
+docs/
+
+# Git
+.git/
+.gitignore
+
+# Sensitive data
+appsettings.json
+*.env
+.env.local
+Memory/
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+

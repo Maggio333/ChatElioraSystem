@@ -1,0 +1,81 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <SolidColorBrush x:Key="ScrollTrackBrush" Color="#2C2C38"/>
+    <SolidColorBrush x:Key="ScrollThumbBrush" Color="#5A8AEB"/>
+
+    <SolidColorBrush x:Key="BgMain" Color="#0E1020"/>
+    <SolidColorBrush x:Key="BgSidebar" Color="#14172A"/>
+    <SolidColorBrush x:Key="BgUser" Color="#2A3A6A"/>
+    <SolidColorBrush x:Key="BgAi" Color="#6574D4"/>
+    <SolidColorBrush x:Key="FgText" Color="#FFFFFF"/>
+    <SolidColorBrush x:Key="FgSubtle" Color="#CCDBF1"/>
+    <SolidColorBrush x:Key="Accent" Color="#7EA2FF"/>
+
+    <!-- Styl dla On/Off ToggleButton -->
+    <Style x:Key="OnOffToggleStyle" TargetType="ToggleButton">
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="25"/>
+        <Setter Property="Background" Value="#444"/>
+        <Setter Property="BorderBrush" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Grid>
+                        <Border x:Name="BackgroundBorder"
+                                CornerRadius="12.5"
+                                Background="#888"
+                                Width="50"
+                                Height="25"/>
+                        <Ellipse x:Name="Knob"
+                                 Width="20"
+                                 Height="20"
+                                 Fill="White"
+                                 Margin="2.5,2.5,0,2.5"
+                                 HorizontalAlignment="Left"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="BackgroundBorder" Property="Background" Value="#4CAF50"/>
+                            <Setter TargetName="Knob" Property="HorizontalAlignment" Value="Right"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="ScrollBar" x:Key="ReflectumVerticalScrollBar">
+        <Setter Property="Orientation" Value="Vertical"/>
+        <Setter Property="Width" Value="3"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ScrollBar">
+                    <Grid Background="{StaticResource ScrollTrackBrush}">
+                        <Track Name="PART_Track"
+                   IsDirectionReversed="true"
+                   Focusable="false">
+                            <Track.DecreaseRepeatButton>
+                                <RepeatButton Command="ScrollBar.LineUpCommand"
+                                  Style="{x:Null}"
+                                  Background="Transparent"
+                                  Height="0" />
+                            </Track.DecreaseRepeatButton>
+                            <Track.Thumb>
+                                <Thumb Background="{StaticResource ScrollThumbBrush}"/>
+                            </Track.Thumb>
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Command="ScrollBar.LineDownCommand"
+                                  Style="{x:Null}"
+                                  Background="Transparent"
+                                  Height="0" />
+                            </Track.IncreaseRepeatButton>
+                        </Track>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
