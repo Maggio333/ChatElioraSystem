@@ -15,6 +15,7 @@
 - [x] ✅ Wszystkie hardcoded ścieżki usunięte
 - [x] ✅ `.gitignore` zawiera `appsettings.json`, `Memory/`, etc.
 
+
 ### 4. Dokumentacja
 - [x] ✅ README.md - kompletna
 - [x] ✅ LICENSE - MIT z Twoim imieniem i rokiem
