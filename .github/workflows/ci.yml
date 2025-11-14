@@ -8,7 +8,7 @@ on:
 
 jobs:
   build-and-test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     
     steps:
     - uses: actions/checkout@v4
@@ -21,9 +21,12 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     
-    - name: Build
-      run: dotnet build --no-restore --configuration Release
+    - name: Build Core library
+      run: dotnet build ChatElioraSystem.Core/ChatElioraSystem.Core.csproj --no-restore --configuration Release
+    
+    - name: Build Tests
+      run: dotnet build tests/ChatElioraSystem.Core.Tests/ChatElioraSystem.Core.Tests.csproj --no-restore --configuration Release
     
     - name: Test
-      run: dotnet test --no-build --configuration Release --verbosity normal
+      run: dotnet test tests/ChatElioraSystem.Core.Tests/ChatElioraSystem.Core.Tests.csproj --no-build --configuration Release --verbosity normal
 
