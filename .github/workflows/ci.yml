@@ -18,8 +18,11 @@ jobs:
       with:
         dotnet-version: '8.0.x'
     
-    - name: Restore dependencies
-      run: dotnet restore
+    - name: Restore Core dependencies
+      run: dotnet restore ChatElioraSystem.Core/ChatElioraSystem.Core.csproj
+    
+    - name: Restore Test dependencies
+      run: dotnet restore tests/ChatElioraSystem.Core.Tests/ChatElioraSystem.Core.Tests.csproj
     
     - name: Build Core library
       run: dotnet build ChatElioraSystem.Core/ChatElioraSystem.Core.csproj --no-restore --configuration Release
