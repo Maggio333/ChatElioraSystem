@@ -46,7 +46,7 @@ a projekt przestrzega [Semantic Versioning](https://semver.org/lang/pl/).
 - MVVM pattern dla UI
 - Strategy Pattern dla różnych typów promptów
 - Repository Pattern dla dostępu do danych
-- MCP (Model Context Protocol) dla operacji RAG
+- Własny format JSON (MCP-inspired) dla operacji RAG
 
 ---
 

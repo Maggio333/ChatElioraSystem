@@ -76,7 +76,7 @@ Ten projekt powstał jako **kompletna, działająca implementacja** systemu RAG 
 - System pamięci długoterminowej wykorzystujący bazę wektorową Qdrant
 - Automatyczne wyszukiwanie kontekstu z historii rozmów
 - Zapisywanie i odczytywanie kontekstu z bazy wektorowej
-- Format MCP (Model Context Protocol) dla akcji RAG
+- Własny format JSON (MCP-inspired) dla akcji RAG
 
 ### 3. Zarządzanie tematami
 - Organizacja konwersacji w tematy (Ogólna, Kod, Refleksyjna, ArchitekturaKodu)
@@ -615,8 +615,8 @@ System automatycznie ogranicza kontekst wysyłany do LLM, aby nie przekroczyć l
 - Dla głównej odpowiedzi: ostatnie **6 wiadomości** (user/assistant) + ostatnie **3 systemowe**
 - Zawsze zaczyna od wiadomości użytkownika (walidacja)
 
-#### MCP (Model Context Protocol)
-Format JSON używany do komunikacji z LLM dla operacji na bazie wektorowej:
+#### Format akcji RAG (MCP-inspired)
+Własny format JSON inspirowany koncepcją Model Context Protocol, używany do komunikacji z LLM dla operacji na bazie wektorowej:
 ```json
 {
   "Akcja": {
@@ -629,6 +629,8 @@ Format JSON używany do komunikacji z LLM dla operacji na bazie wektorowej:
   }
 }
 ```
+
+**Uwaga:** To nie jest oficjalny protokół MCP (Model Context Protocol) opracowany przez Anthropic. To własny format JSON zaprojektowany specjalnie dla operacji RAG w tym systemie, inspirowany koncepcją strukturyzowanej komunikacji z LLM.
 
 #### Streaming Response
 - Wszystkie odpowiedzi z LLM są przesyłane strumieniowo (chunk by chunk)
@@ -666,14 +668,14 @@ Główny serwis orkiestrujący różne typy promptów i operacje RAG. Koordynuje
 - Obsługa wielu modeli LLM jednocześnie
 
 #### PromptTopicOrchiestratorService
-Zarządzanie tematami rozmów w bazie wektorowej. Używa formatu MCP (Model Context Protocol) do komunikacji z LLM.
+Zarządzanie tematami rozmów w bazie wektorowej. Używa własnego formatu JSON (inspirowanego koncepcją MCP) do komunikacji z LLM.
 
 **Główne metody:**
-- `ManageCurrentTopic()` - Zarządzanie tematem (odczyt/zapis) w formacie MCP
+- `ManageCurrentTopic()` - Zarządzanie tematem (odczyt/zapis) we własnym formacie JSON
 - `GetLastTopics()` - Pobieranie ostatnich tematów z bazy wektorowej
 
 **Funkcjonalności:**
-- Format MCP dla akcji na bazie wektorowej
+- Własny format JSON (MCP-inspired) dla akcji na bazie wektorowej
 - Parsowanie JSON z odpowiedzi LLM
 - Automatyczne zapisywanie tematów rozmów
 - Formatowanie tematów jako kontekst dla LLM
@@ -735,7 +737,7 @@ Abstrakcyjna klasa bazowa dla wszystkich serwisów promptów. Zapewnia wspólną
 **PromptDbVecService**
 - **Przeznaczenie**: Integracja z bazą wektorową (RAG)
 - **Funkcjonalności**:
-  - Format MCP (Model Context Protocol) dla akcji RAG
+  - Własny format JSON (MCP-inspired) dla akcji RAG
   - Odczyt kontekstu z bazy wektorowej
   - Zapis kontekstu do bazy wektorowej
   - Parsowanie JSON z odpowiedzi LLM
@@ -987,7 +989,7 @@ Prompty dla serwisu kategoryzacji rozmów.
 - `Description` - Opis kategorii
 
 #### IRAGPromptsDbVec
-Prompty dla operacji RAG w formacie MCP (Model Context Protocol).
+Prompty dla operacji RAG we własnym formacie JSON (inspirowanym koncepcją MCP).
 
 **Wersje:**
 - `RAGPromptMCPFormat` - Wersja podstawowa
@@ -1037,7 +1039,7 @@ Model reprezentujący chunk z bazy wektorowej (RAG).
 - `Metadata` - Metadane chunka
 
 #### MpcAkcja / Payload
-Model dla akcji MCP (Model Context Protocol).
+Model dla akcji RAG we własnym formacie JSON (inspirowanym koncepcją MCP).
 
 **Struktura:**
 ```json
@@ -1238,7 +1240,7 @@ Kolekcja tematów rozmów.
 - **Indeks:** `Akcja.Metadata.Timestamp` (datetime) - automatycznie tworzony
 
 **Format danych:**
-- Format MCP (Model Context Protocol)
+- Własny format JSON (MCP-inspired)
 - Payload zawiera temat rozmowy z metadanymi
 - Indeks na polu Timestamp umożliwia sortowanie chronologiczne
 
