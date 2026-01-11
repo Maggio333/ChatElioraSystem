@@ -31,7 +31,7 @@ namespace ChatElioraSystem.Core
             services.AddSingleton<IChatLogService, ChatLogService>();
 
             services.AddScoped<IPromptCodeService, PromptCodeService>();
-            services.AddScoped<IPromptReflectionService, PromptReflectionService>();
+            //services.AddScoped<IPromptReflectionService, PromptReflectionService>();
             services.AddScoped<IPromptGeneralService, PromptGeneralService>();
             services.AddScoped<IPromptJudgeService, PromptJudgeService>();
             services.AddScoped<IPromptTypeOrchiestratorService, PromptTypeOrchiestratorService>();
@@ -41,7 +41,7 @@ namespace ChatElioraSystem.Core
             services.AddScoped<IPromptMCPTopicsService, PromptMCPTopicsService>();
 
             
-            services.AddSingleton<IRAGPromptReflection, RAGPromptReflection>();
+            //services.AddSingleton<IRAGPromptReflection, RAGPromptReflection>();
             services.AddSingleton<IRAGPromptsGeneral, RAGPromptsGeneral>();
             services.AddSingleton<IRAGPromptCode, RAGPromptCode>();
             services.AddSingleton<IRAGPromptJudge, RAGPromptJudge>();
