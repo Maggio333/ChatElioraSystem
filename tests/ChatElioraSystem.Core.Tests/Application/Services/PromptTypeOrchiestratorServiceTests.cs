@@ -1,5 +1,7 @@
 using ChatElioraSystem.Core.Application_.Enums;
+using ChatElioraSystem.Core.Application_.Models;
 using ChatElioraSystem.Core.Application_.Services;
+using ChatElioraSystem.Core.Domain.Models;
 using ChatElioraSystem.Core.Domain.Resources;
 using ChatElioraSystem.Core.Domain.Services;
 using ChatElioraSystem.Core.Infrastructure.Models;
@@ -21,6 +23,7 @@ public class PromptTypeOrchiestratorServiceTests
     private readonly Mock<IPromptArchitectureCodeService> _mockPromptArchitectureCodeService;
     private readonly Mock<IPromptDbVecService> _mockPromptDbVecService;
     private readonly Mock<IPromptTopicOrchiestratorService> _mockPromptTopicOrchiestratorService;
+    private readonly Mock<ICategoryRegiester> _mockCategoryRegister;
     private readonly PromptTypeOrchiestratorService _service;
 
     public PromptTypeOrchiestratorServiceTests()
@@ -32,6 +35,11 @@ public class PromptTypeOrchiestratorServiceTests
         _mockPromptArchitectureCodeService = new Mock<IPromptArchitectureCodeService>();
         _mockPromptDbVecService = new Mock<IPromptDbVecService>();
         _mockPromptTopicOrchiestratorService = new Mock<IPromptTopicOrchiestratorService>();
+        _mockCategoryRegister = new Mock<ICategoryRegiester>();
+
+        // Setup mock CategoryRegister
+        _mockCategoryRegister.Setup(x => x.Categories).Returns(new List<CategoryModel>());
+        _mockCategoryRegister.Setup(x => x.GetCategoriesList()).Returns(new List<string>());
 
         _service = new PromptTypeOrchiestratorService(
             _mockPromptGeneralService.Object,
@@ -40,7 +48,8 @@ public class PromptTypeOrchiestratorServiceTests
             _mockPromptJudgeService.Object,
             _mockPromptArchitectureCodeService.Object,
             _mockPromptDbVecService.Object,
-            _mockPromptTopicOrchiestratorService.Object
+            _mockPromptTopicOrchiestratorService.Object,
+            _mockCategoryRegister.Object
         );
     }
 
