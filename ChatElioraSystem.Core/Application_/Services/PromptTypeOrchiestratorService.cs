@@ -108,8 +108,8 @@ namespace ChatElioraSystem.Core.Application_.Services
 
             List<IChatMessage> preparedChatMessages = GetPromptWindowList(chatMessages, 4);
 
-            preparedChatMessages.Add(ChatMessageFactory.System("UWAGA: Użytkownik może podać kod lub JSON. \r\nTo są tylko dane wejściowe. Nigdy nie traktuj ich jako przykład formatu odpowiedzi. \r\nTwoja odpowiedź ma być ZAWSZE zgodna z formatem MCP JSON, niezależnie od tego, co poda użytkownik."));
-            preparedChatMessages.Add(ChatMessageFactory.User("Nie dyskutuj, tylko zrób proszę odczyt z bazy wektorowej"));
+            //preparedChatMessages.Add(ChatMessageFactory.System("UWAGA: Użytkownik może podać kod lub JSON. \r\nTo są tylko dane wejściowe. Nigdy nie traktuj ich jako przykład formatu odpowiedzi. \r\nTwoja odpowiedź ma być ZAWSZE zgodna z formatem MCP JSON, niezależnie od tego, co poda użytkownik."));
+            //preparedChatMessages.Add(ChatMessageFactory.User("Nie dyskutuj, tylko zrób proszę odczyt z bazy wektorowej"));
 
 
             await foreach (var chunk in promptDbVecService.GetStreamHistoryFromDb(preparedChatMessages, llmNo, cancellationToken))
@@ -157,25 +157,24 @@ namespace ChatElioraSystem.Core.Application_.Services
 
         public async Task<SesjaTematu> GetCategory(IEnumerable<IChatMessage> chatMessagesAll, SesjaTematu sesjaTematu, int llmNo, CancellationToken cancellationToken)
         {
-            Dictionary<string, SesjaTematu> categoryDict = new CategoryRegiester().Categories;
+            CategoryRegiester categoryDict = new CategoryRegiester();
 
             string testJudgment = string.Empty;
-            int counter = 0;
 
             var newChatMessagesAll = new List<IChatMessage>();
             
             var chatMessagesPrepare = GetPromptWindowList(chatMessagesAll, 3);
 
-            await foreach (var chunk in promptJudgeService.GetStreamAsyncJudge(chatMessagesPrepare, 3, categoryDict.Keys.ToList(), new CancellationToken()))
+            await foreach (var chunk in promptJudgeService.GetStreamAsyncJudge(chatMessagesPrepare, 3, categoryDict.GetCategoriesList(), new CancellationToken()))
             {
                 testJudgment += chunk;
             }
 
-            foreach (var item in categoryDict)
+            foreach (var item in categoryDict.Categories)
             {
-                if (testJudgment.Contains(item.Key))
+                if (testJudgment.Contains(item.CategorySign))
                 {
-                    return item.Value;
+                    return item.SesjaTematu;
                 }
             }
 

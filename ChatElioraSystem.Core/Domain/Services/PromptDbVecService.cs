@@ -202,7 +202,7 @@ namespace ChatElioraSystem.Core.Domain.Services
             var result = new List<IChatMessage>
             {
                 ChatMessageFactory.System(RAGPromptsGeneral.UserAdminPrompt),
-                ChatMessageFactory.System(RAGPromptsGeneral.FirstSystemPrompt),
+                //ChatMessageFactory.System(RAGPromptsGeneral.FirstSystemPrompt),
                 ChatMessageFactory.System(RAGPromptsDbVec.Role),
 
 

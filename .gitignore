@@ -357,4 +357,5 @@ ChatElioraSystem.Core/Domain/Memory/
 appsettings.json
 *.env
 .env.local
+ChatElioraSystem.Core/Domain/Resources/RAGPromptReflection.cs
 
