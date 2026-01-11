@@ -7,5 +7,6 @@ namespace ChatElioraSystem.Core.Application_.Models
     {
         List<CategoryModel> Categories { get; set; }
         string Description { get; }
+        List<string> GetCategoriesList();
     }
 }

@@ -4,9 +4,9 @@ using System.Text;
 
 namespace ChatElioraSystem.Core.Application_.Models
 {
-    public class CategoryRegiester : ICategoryRegiester
+    public class CategoryRegister : ICategoryRegiester
     {
-        public CategoryRegiester()
+        public CategoryRegister()
         {
             Categories.Add(new CategoryModel(SesjaTematu.Ogólna, "Generalna rozmowa, która nie jest techniczna ani refleksyjna", "<Category:General>"));
             Categories.Add(new CategoryModel(SesjaTematu.Kod, "Gdy rozmowa jest techniczna, gdy piszesz kod to też ta kategoria", "<Category:Code>"));

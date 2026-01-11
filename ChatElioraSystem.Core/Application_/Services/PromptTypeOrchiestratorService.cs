@@ -23,9 +23,10 @@ namespace ChatElioraSystem.Core.Application_.Services
         private IPromptArchitectureCodeService promptArchitectureCodeService;
         private IPromptDbVecService promptDbVecService;
         private IPromptTopicOrchiestratorService _promptTopicOrchiestratorService;
+        private ICategoryRegiester categoryRegister;
         public bool IsSaveToDbVector { get; set; } = false;
 
-        public PromptTypeOrchiestratorService(IPromptGeneralService promptGeneralService, IPromptCodeService promptCodeService, IPromptReflectionService promptReflectionService, IPromptJudgeService promptJudgeService, IPromptArchitectureCodeService promptArchitectureCodeService, IPromptDbVecService promptDbVecService, IPromptTopicOrchiestratorService promptTopicOrchiestratorService)
+        public PromptTypeOrchiestratorService(IPromptGeneralService promptGeneralService, IPromptCodeService promptCodeService, IPromptReflectionService promptReflectionService, IPromptJudgeService promptJudgeService, IPromptArchitectureCodeService promptArchitectureCodeService, IPromptDbVecService promptDbVecService, IPromptTopicOrchiestratorService promptTopicOrchiestratorService, ICategoryRegiester categoryRegister)
         {
             this.promptCodeService = promptCodeService;
             this.promptReflectionService = promptReflectionService;
@@ -33,7 +34,8 @@ namespace ChatElioraSystem.Core.Application_.Services
             this.promptJudgeService = promptJudgeService;
             this.promptArchitectureCodeService = promptArchitectureCodeService;
             this.promptDbVecService = promptDbVecService;
-            _promptTopicOrchiestratorService = promptTopicOrchiestratorService; 
+            _promptTopicOrchiestratorService = promptTopicOrchiestratorService;
+            this.categoryRegister = categoryRegister;
         }
 
         public async Task<string> LoadCurrentTopic(CancellationToken cancellationToken = default)
@@ -157,20 +159,18 @@ namespace ChatElioraSystem.Core.Application_.Services
 
         public async Task<SesjaTematu> GetCategory(IEnumerable<IChatMessage> chatMessagesAll, SesjaTematu sesjaTematu, int llmNo, CancellationToken cancellationToken)
         {
-            CategoryRegiester categoryDict = new CategoryRegiester();
-
             string testJudgment = string.Empty;
 
             var newChatMessagesAll = new List<IChatMessage>();
             
             var chatMessagesPrepare = GetPromptWindowList(chatMessagesAll, 3);
 
-            await foreach (var chunk in promptJudgeService.GetStreamAsyncJudge(chatMessagesPrepare, 3, categoryDict.GetCategoriesList(), new CancellationToken()))
+            await foreach (var chunk in promptJudgeService.GetStreamAsyncJudge(chatMessagesPrepare, 3, categoryRegister.GetCategoriesList(), new CancellationToken()))
             {
                 testJudgment += chunk;
             }
 
-            foreach (var item in categoryDict.Categories)
+            foreach (var item in categoryRegister.Categories)
             {
                 if (testJudgment.Contains(item.CategorySign))
                 {

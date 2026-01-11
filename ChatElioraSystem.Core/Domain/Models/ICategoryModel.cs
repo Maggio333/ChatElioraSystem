@@ -6,5 +6,6 @@ namespace ChatElioraSystem.Core.Domain.Models
     {
         string Description { get; set; }
         string CategorySign { get; set; }
+        SesjaTematu SesjaTematu { get; set; }
     }
 }

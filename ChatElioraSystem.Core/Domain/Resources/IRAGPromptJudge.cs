@@ -11,6 +11,5 @@ namespace ChatElioraSystem.Core.Domain.Resources
     {
         string GetTheme();
         string Description { get; }
-
     }
 }

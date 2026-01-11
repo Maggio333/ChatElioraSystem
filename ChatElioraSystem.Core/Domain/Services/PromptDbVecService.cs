@@ -68,7 +68,6 @@ namespace ChatElioraSystem.Core.Domain.Services
             await foreach (var chunk in GetStreamAsync(chatMessage, LLMNamesEnum.Custom, llmNo, cancelationWords, cancellationToken))
             {
                 memory += chunk;
-                //match = Regex.Match(memory, @"<Akcja>(.*?)<\/Akcja>", RegexOptions.Singleline);
                 match = Regex.Match(memory, @"```json(.*?)```", RegexOptions.Singleline);
 
                 toolOutput.Add(new ChatMessage
@@ -81,25 +80,19 @@ namespace ChatElioraSystem.Core.Domain.Services
 
                 if (memory.Length >= 20 && !memory.Contains("```json"))
                 {
-                    break;
-                    //continue;
-                    //yield break;      
+                    break;    
                 }
 
                 yield return new RAGChunk
                 {
                     TextChunk = chunk,
-                    ChatMessages = null // Nie zwracaj jeszcze ChatMessages – finalizuj na końcu
+                    ChatMessages = null 
                 };
 
                 if (memory != string.Empty && match.Success)
                 {
                     break;
-                    //continue;
-                    //yield break;
-                    //yield break;
                 }
-                //yield return chunk;
             }
 
             MpcAkcja mpcAkcja = new MpcAkcja();

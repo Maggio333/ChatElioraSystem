@@ -1,4 +1,5 @@
-﻿using ChatElioraSystem.Core.Application_.Services;
+﻿using ChatElioraSystem.Core.Application_.Models;
+using ChatElioraSystem.Core.Application_.Services;
 using ChatElioraSystem.Core.Domain.Resources;
 using ChatElioraSystem.Core.Domain.Services;
 using ChatElioraSystem.Core.Infrastructure.Services;
@@ -51,8 +52,7 @@ namespace ChatElioraSystem.Core
             services.AddSingleton<IRAGPromptsDbVec, RAGPromptMCPFormatV3>();
             services.AddSingleton<IRAGPromptMCPTopics, RAGPromptMCPTopics>();
 
-
-
+            services.AddSingleton<ICategoryRegiester, CategoryRegister>();
 
             //services.AddScoped<IJudgeCategoryService, JudgeCategoryService>();
 
